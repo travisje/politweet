@@ -247,6 +247,14 @@ Devise.setup do |config|
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
 
+
+  # config.omniauth :twitter, ENV['tw_access_token'], ENV['tw_access_token_secret'], {
+  #     :oauth_callback => 'http://127.0.0.1:3000/users/auth/twitter/callback'
+  #   }
+
+  config.omniauth :twitter, ENV['tw_consumer_key'], ENV['tw_consumer_secret']
+
+  # config.omniauth :twitter, ENV["TWITTER_KEY"], ENV["TWITTER_SECRET"], { :scope => 'r_fullprofile, r_emailaddress', :client_options => {:ssl => {:ca_file => '/usr/lib/ssl/certs/ca-certificates.crt'}}}
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.

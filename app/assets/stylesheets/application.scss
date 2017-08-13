@@ -16,10 +16,42 @@
 
 // .hidden-row {padding: 0 !important;}
 
-.table > tbody > tr.odd {
-    background-color: #f9f9f9;
+.table > {
+  thead {
+    tr {
+      th {
+        cursor: pointer;
+      }
+    }
+  }
+  tbody{
+    tr{
+      &.odd {
+
+        background-color: #f9f9f9;
+      }
+      td {
+        &.expand-donations {
+          cursor: pointer;
+        }
+      }
+    } 
+  }
+  
 }
+
 
 table.donations thead tr {
   background-color: #eff8ff;
+  
+}
+
+.twitter-icon {
+  background-image: url(twitter-icon.png);
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 0px;
+  background-position-y: 5px;
+  background-position-x: 18px;
+  cursor: pointer;
 }

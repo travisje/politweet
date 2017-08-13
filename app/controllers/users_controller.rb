@@ -1,8 +1,5 @@
-class DonationsController < ApplicationController
-  def index
-    candidate = Candidate.find(params[:candidate_id])
-    donations = candidate.donations.where('amount > ?', 399).order(amount: :desc)
-    donations.to_json
-    render json: donations.to_json
-  end
-end 
+class UsersController < ApplicationController
+  protect_from_forgery prepend: true
+  before_action :authenticate_user!
+
+end

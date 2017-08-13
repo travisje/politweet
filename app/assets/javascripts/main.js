@@ -86,7 +86,7 @@ $(document).ready(function(){
             var clonedTable = donationsTable.clone();
             data.forEach(function(donation){
 
-              clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "</tr>");
+              clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "<td class='twitter-icon'></td>" + "</tr>");
 
             });
             
@@ -105,6 +105,9 @@ $(document).ready(function(){
                 info:     false,
                 searching: false,
                 order: [[0, 'desc']]
+                // columnDefs: [
+                //   {className: "twitter-icon", "targets":[9]}
+                // ]
                 // "ajax": "../ajax/data/objects.txt",
                 // "columns": [
                 //     {
