@@ -14,35 +14,7 @@ $(document).ready(function(){
   var donationsTable = $('table.donations');
 
   $('.accordion-body').on('show.bs.collapse', function (e) {
-    var insertSpot = $(this);
-    if (insertSpot.find('table.donations').length === 0) {
-      donations_path = "candidates/" + $(this).data('candidateId') + "/donations";
-
-      var cellMaker = function(text){
-        return "<td>" + text + "</td>";
-      };
-
-      $.ajax(donations_path, {
-        success: function(data) {
-          console.log('data', data);
-
-          var clonedTable = donationsTable.clone();
-          data.forEach(function(donation){
-
-            clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "</tr>");
-
-          });
-          insertSpot.append(clonedTable);
-
-          // $('#main').html($(data).find('#main *'));
-          // $('#notification-bar').text('The page has been successfully loaded');
-        },
-        error: function() {
-          console.log('error');
-        }
-      });
-
-    }
+    
 
   });
 
@@ -66,37 +38,97 @@ $(document).ready(function(){
   }
    
 
-  var table = $('#example').DataTable( {
-      "ajax": "../ajax/data/objects.txt",
-      "columns": [
-          {
-              "className":      'details-control',
-              "orderable":      false,
-              "data":           null,
-              "defaultContent": ''
-          },
-          { "data": "name" },
-          { "data": "position" },
-          { "data": "office" },
-          { "data": "salary" }
-      ],
-      "order": [[1, 'asc']]
+  var candidatesTable = $('#candidates-table').DataTable( {
+      paging:   false,
+      // ordering: false,
+      info:     false,
+      searching: false
+      // "ajax": "../ajax/data/objects.txt",
+      // "columns": [
+      //     {
+      //         "className":      'expand-donations',
+      //         "orderable":      false,
+      //         "data":           null,
+      //         "defaultContent": ''
+      //     },
+      //     { "data": "name" },
+      //     { "data": "position" },
+      //     { "data": "office" },
+      //     { "data": "salary" }
+      // ],
+      // "order": [[1, 'asc']]
   } );
-   
+
+  var cellMaker = function(text){
+    return "<td>" + text + "</td>";
+  };
   // Add event listener for opening and closing details
-  $('#example tbody').on('click', 'td.details-control', function () {
+  $('#candidates-table tbody').on('click', 'td.expand-donations', function () {
+      var td = $(this);
       var tr = $(this).closest('tr');
-      var row = table.row( tr );
+      var row = candidatesTable.row( tr );
 
       if ( row.child.isShown() ) {
-          // This row is already open - close it
-          row.child.hide();
-          tr.removeClass('shown');
+        // This row is already open - close it
+        console.log('showing so hiding');
+        td.text('+');
+        row.child.hide();
+        tr.removeClass('shown');
       }
       else {
-          // Open this row
-          row.child( format(row.data()) ).show();
-          tr.addClass('shown');
+        td.text('-');
+        donations_path = "candidates/" + $(this).data('candidateId') + "/donations";
+
+        $.ajax(donations_path, {
+          success: function(data) {
+            console.log('data', data);
+
+            var clonedTable = donationsTable.clone();
+            data.forEach(function(donation){
+
+              clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "</tr>");
+
+            });
+            
+
+
+
+
+            // Open this row
+            console.log('hidden so showing');
+            clonedTable.removeClass('hidden');
+            row.child( clonedTable ).show();
+            tr.addClass('shown');
+
+            clonedTable.DataTable( {
+                paging:   false,
+                info:     false,
+                searching: false,
+                order: [[0, 'desc']]
+                // "ajax": "../ajax/data/objects.txt",
+                // "columns": [
+                //     {
+                //         "className":      'expand-donations',
+                //         "orderable":      false,
+                //         "data":           null,
+                //         "defaultContent": ''
+                //     },
+                //     { "data": "name" },
+                //     { "data": "position" },
+                //     { "data": "office" },
+                //     { "data": "salary" }
+                // ],
+                // "order": [[1, 'asc']]
+            } );
+
+            // $('#main').html($(data).find('#main *'));
+            // $('#notification-bar').text('The page has been successfully loaded');
+          },
+          error: function() {
+            console.log('error');
+          }
+        });
+
       }
   } );
 

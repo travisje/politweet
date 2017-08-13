@@ -14,9 +14,9 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-.hidden-row {padding: 0 !important;}
+// .hidden-row {padding: 0 !important;}
 
-.table-my-striped > tbody > tr:nth-of-type(4n + 3) {
+.table > tbody > tr.odd {
     background-color: #f9f9f9;
 }
 

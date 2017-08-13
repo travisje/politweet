@@ -2,10 +2,11 @@
   .row
     .col-xs-12
       %h2 114th Congress
-      %table.table.table-my-striped.table-hover.candidates
+      %table.table.table-hover.candidates{id: 'candidates-table'}
         %caption Show me the Money
         %thead
           %tr
+            %th
             %th Last Name
             %th First Name
             %th Chamber
@@ -15,7 +16,8 @@
             %th Twitter Handle
         %tbody
           - @candidates.each_with_index do |candidate, index|
-            %tr.main.accordion-toggle{data:{toggle: "collapse", target: "#candidate-donations-#{index}"}}
+            %tr.main
+              %td.expand-donations{data: {candidate_id: candidate.id}} +
               %th{:scope => "row"}= candidate.last_name
               %td= candidate.first_name
               %td= candidate.chamber
@@ -23,12 +25,12 @@
               %td= candidate.state
               %td= candidate.district
               %td= candidate.twitter_handle.present? ? "@" + candidate.twitter_handle : ""
-            %tr.hidden-row
-              %td.hidden-row{colspan: "7"}
-                .accordion-body.collapse{id: "candidate-donations-#{index}", data: {candidate_id: candidate.id} }
+            -# %tr.hidden-row
+            -#   %td.hidden-row{colspan: "7"}
+            -#     .accordion-body.collapse{id: "candidate-donations-#{index}", data: {candidate_id: candidate.id} }
               
-
-      %table.table.table-striped.table-hover.donations
+      -# my template donation table which I clone in JS
+      %table.table.table-striped.table-hover.donations.hidden
         %thead
           %tr
             %th Amount
