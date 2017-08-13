@@ -4,8 +4,8 @@ class Candidate < ActiveRecord::Base
   
   acts_as_taggable
   
-  has_many :donations, through: :committees
   has_many :committees
+  has_many :donations, through: :committees
 
   def self.request(request_url)
     base_url = "https://api.open.fec.gov/v1/"

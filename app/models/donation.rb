@@ -7,11 +7,17 @@ class Donation < ActiveRecord::Base
   belongs_to :batch
   has_many :tweets
 
-  def self.import
+  @@for_bulk_insert = []
+
+  def self.import_csv_and_create(validate=true)
     batch = Batch.create
-    Committee.set_fec_ids
-    set_donat_lookup
-    f = File.open("lib/data/02032015itcont.txt", "r:bom|utf-8") 
+    set_fec_ids
+    committee_fec_id_glossary = Committee.fec_id_glossary
+    committees_for_batch_inserting = []
+    # CHANGE
+    # Committee.set_fec_ids
+    # set_donat_lookup
+    f = File.open("lib/data/itcont.txt", "r:bom|utf-8") 
     donations = SmarterCSV.process(f, {
       key_mapping: {
         :cmte_id => "rptcom_fec_id",
@@ -20,19 +26,26 @@ class Donation < ActiveRecord::Base
         :TRANSACTION_AMT.downcase => "amount",
         :SUB_ID.downcase => "fec_record_num"
       },
-      :chunk_size => 10000,
+      :chunk_size => 50000,
       col_sep: "|",
       convert_values_to_numeric: false}) do |chunk|
-      chunk.each do |don|
-        don[:date] = date_convert(don[:date])
-        don[:amount] = don[:amount].to_i
-        don[:batch_id] = batch.id
-        don[:first_name] = first_name(don[:full_name])
-        don[:last_name] = last_name(don[:full_name])
-      end
-      import_chunk(chunk)
+        chunk.each do |donation|
+          donation[:date] = date_convert(donation[:date])
+          donation[:amount] = donation[:amount].to_i
+          donation[:batch_id] = batch.id
+          donation[:first_name] = first_name(donation[:full_name])
+          donation[:last_name] = last_name(donation[:full_name])
+        end
+        import_chunk(chunk, committee_fec_id_glossary)
+        #TODO clean data. Check for multiple dup fec_ids
+        Donation.import(for_bulk_insert, validate: validate)
+        @@for_bulk_insert = []
       end
     f.close
+  end
+
+  def strip_out_unknown_committees
+
   end
 
   def self.first_name(full_name)
@@ -59,37 +72,34 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def self.set_donat_lookup
-    @@donat_lookup = Set.new
-    Donation.all.each do |donation|
-      @@donat_lookup << donation.fec_record_num
-    end
+  def self.set_fec_ids
+    @@donat_lookup = Donation.pluck(:rptcom_fec_id)
   end
 
-
-  
-
-  def self.donat_lookup
+  def self.fec_ids
     @@donat_lookup
   end
+
+  def self.for_bulk_insert
+    @@for_bulk_insert  
+  end
+
    
-  def self.import_chunk(donations_dat)
-    donations_dat.each do |donation_dat|
-      fec_record_num = donation_dat[:fec_record_num]
-      fec_id = donation_dat[:rptcom_fec_id]
-        if Committee.com_fec_ids[fec_id] && !donat_lookup.include?(fec_record_num)
-          donation = Donation.new(donation_dat)
-          committee = Committee.com_fec_ids[fec_id]
-          donation.committee = committee
-          donation.save
-        end
+  def self.import_chunk(donations_params, committee_fec_id_glossary)
+    donations_params.each do |donation_params|
+      
+      committee_fec_id = donation_params[:rptcom_fec_id]
+      fec_record_num = donation_params[:fec_record_num]
+
+      # Ignore donations that we don't have existing committee id's for or that we already have a donation record for
+      # TODO add updater for existing donations the have been changed by FEC
+      # TODO add multiple insert statement capability for speed
+      next if !committee_fec_id_glossary[committee_fec_id] || fec_ids.include?(fec_record_num)
+      donation_params[:committee_id] = committee_fec_id_glossary[committee_fec_id]
+      @@for_bulk_insert << Donation.new(donation_params)
     end
   end
 
-  def tweetify
-    handle = "@#{self.committee.candidate.twitter_handle}"
-    "Let's congratulate #{handle} on the $#{self.amount} of influence he sold to #{self.first_name} #{self.last_name} of #{self.employer}!"
-  end
 
   def self.last_batch
     Batch.last.donations
@@ -118,6 +128,11 @@ class Donation < ActiveRecord::Base
       end
     end
     dup_results.flatten
+  end
+
+  def tweetify
+    handle = "@#{self.committee.candidate.twitter_handle}"
+    "Let's congratulate #{handle} on the $#{self.amount} of influence he sold to #{self.first_name} #{self.last_name} of #{self.employer}!"
   end
 
   def self.to_csv(data, name = nil)

@@ -2,17 +2,13 @@ class Committee < ActiveRecord::Base
   belongs_to :candidate
   has_many :donations
 
-  @@com_fec_ids = {}
-
-  def self.set_fec_ids
+  def self.fec_id_glossary
     committees = Committee.all
+    glossary = {}
     committees.each do |committee|
-      @@com_fec_ids[committee.fec_id] = committee
+      glossary[committee.fec_id] = committee.id
     end
-  end
-
-  def self.com_fec_ids
-    @@com_fec_ids
+    glossary
   end
 
 end

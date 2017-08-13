@@ -12,7 +12,6 @@ class Csv
         headers.each do |column|
           row << record_hash[column]
         end
-        binding.pry
         csv << row
       end
     end
