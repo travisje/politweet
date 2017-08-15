@@ -10,6 +10,35 @@ $(document).ready(function(){
   //     searching: false
   //   });
   // }
+
+
+  $('button#donation-dummy-submit').on('click', function(){
+
+    console.log("form#donation-dummy-submit clicked so actually submitting form");
+    $('form#new_tweet').submit();
+  });
+
+  $('form#new_tweet').on('submit', function(e){
+    console.log("form#new_tweet submit event");
+    // e.preventDefault();
+
+
+
+    // $(this).submit();
+    // e.preventDefault();
+  });
+
+  $('#donation-modal').on('show.bs.modal', function (e) {
+    // udpate form donation id value
+    console.log('show modal event')
+    var clickedTweetId = $(e.relatedTarget).data('donationId');
+    $('form#new_tweet input#donation-id-input').val(clickedTweetId);
+    // do something...
+  });
+
+  $('.twitter-icon').on('click', function(){
+    console.log('twitter-icon clicked');
+  });
   
   var donationsTable = $('table.donations');
 
@@ -17,26 +46,6 @@ $(document).ready(function(){
     
 
   });
-
-  /* Formatting function for row details - modify as you need */
-  function format ( d ) {
-      // `d` is the original data object for the row
-      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-          '<tr>'+
-              '<td>Full name:</td>'+
-              '<td>'+d.name+'</td>'+
-          '</tr>'+
-          '<tr>'+
-              '<td>Extension number:</td>'+
-              '<td>'+d.extn+'</td>'+
-          '</tr>'+
-          '<tr>'+
-              '<td>Extra info:</td>'+
-              '<td>And any further details here (images etc)...</td>'+
-          '</tr>'+
-      '</table>';
-  }
-   
 
   var candidatesTable = $('#candidates-table').DataTable( {
       paging:   false,
@@ -86,7 +95,7 @@ $(document).ready(function(){
             var clonedTable = donationsTable.clone();
             data.forEach(function(donation){
 
-              clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "<td class='twitter-icon'></td>" + "</tr>");
+              clonedTable.find('tbody').append( "<tr>" + cellMaker(donation.amount) + cellMaker(donation.date) + cellMaker(donation.last_name) + cellMaker(donation.first_name) + cellMaker(donation.employer) + cellMaker(donation.occupation) + cellMaker(donation.state) + cellMaker(donation.city) + cellMaker(donation.fec_record_num) + "<td class='twitter-icon' data-toggle='modal' data-target='#donation-modal' data-donation-id='" + donation.id + "'></td>" + "</tr>");
 
             });
             

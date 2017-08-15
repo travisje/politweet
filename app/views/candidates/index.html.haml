@@ -1,22 +1,53 @@
-/ Button trigger modal
-%button.btn.btn-primary.btn-lg{"data-target" => "#myModal", "data-toggle" => "modal", :type => "button"}
-  Launch demo modal
 / Modal
-#myModal.modal.fade{"aria-labelledby" => "myModalLabel", :role => "dialog", :tabindex => "-1"}
+#donation-modal.modal.fade{"aria-labelledby" => "donation-modalLabel", :role => "dialog", :tabindex => "-1"}
   .modal-dialog{:role => "document"}
     .modal-content
       .modal-header
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
-        %h4#myModalLabel.modal-title Modal title
+        %h4#donation-modal-abel.modal-title Donations Are Better When Tweeted
       .modal-body
-        \...
+        - @tweet = Tweet.new
+        = form_for @tweet do |f|
+          .form-group
+            = f.label "Tweet Text"
+
+            -# TODO look into twitter display plugin that will also allow for url relaxing and nice formatting
+            = f.text_area :text, {class: "form-control", maxlength: "140", rows: "2"}
+
+            = hidden_field_tag 'tweet[donation_id]', 'placholder_id', {id: 'donation-id-input'}
+            -# TODO troubleshoot for safari
+            = f.submit 'Submit', {class: "hidden"}
+        -# %form#tweet-send
+        -#   .form-group
+        -#     %label{:for => "exampleInputEmail1"} Email address
+        -#     %input#exampleInputEmail1.form-control{:placeholder => "Email", :type => "email"}/
+        -#   .form-group
+        -#     %label{:for => "exampleInputPassword1"} Password
+        -#     %input#exampleInputPassword1.form-control{:placeholder => "Password", :type => "password"}/
+        -#   .form-group
+        -#     %label{:for => "exampleInputFile"} File input
+        -#     %input#exampleInputFile{:type => "file"}/
+        -#     %p.help-block Example block-level help text here.
+        -#   .form-group
+        -#     %label{:for => "tweet-text"} Tweet text
+        -#     %textarea#tweet-text.form-control{rows: 3}
+
+          .checkbox
+            %label
+              %input{:type => "checkbox"}/
+              Check me out
+          -# %button.btn.btn-default{:type => "submit"} Submit
+
       .modal-footer
         %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
-        %button.btn.btn-primary{:type => "button"} Save changes
+        %button.btn.btn-primary#donation-dummy-submit{:type => "button"} Tweet!
 
 .container-fluid
   .row
+    .col-xs-12{style: "text-align: center;"}
+      %img.congress-pic{src: 'assets/US_Capitol_from_NW.jpg'}
+    }
     .col-xs-12
       %h2 114th Congress
       %table.table.table-hover.candidates{id: 'candidates-table'}

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-
-  post 'users/tweet', to: "users#tweet"
+  
+  post 'tweets', to: "tweets#create"
   
   root 'candidates#index'
 

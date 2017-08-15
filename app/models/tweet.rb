@@ -1,6 +1,6 @@
 class Tweet < ActiveRecord::Base
   belongs_to :donation
-
+  belongs_to :user
 
   def client(user)
     Twitter::REST::Client.new do |config|

@@ -3,7 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:twitter]
-  
+  has_many :tweets
   
   # TODO create Identity model to not saving directly to user, look into expiring tokens issues, and how to handle no email
   def self.from_omniauth(auth)
