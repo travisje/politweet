@@ -16,3 +16,4 @@
 //= require bootstrap-sprockets
 //= require main
 //= require data-tables
+//= require underscore-string

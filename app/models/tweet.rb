@@ -12,8 +12,9 @@ class Tweet < ActiveRecord::Base
   end
 
 
-  def tweet(user, text)
-    client(user).update(text)
+  def tweet_out(user)
+    response = client(user).update(text)
+    self.tweet_id = response.id.to_s
   end
 
 

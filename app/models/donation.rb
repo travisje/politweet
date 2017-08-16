@@ -4,6 +4,7 @@ class Donation < ActiveRecord::Base
   attr_accessor :col_custom
 
   belongs_to :committee
+  delegate :candidate, :to => :committee, :allow_nil => true
   belongs_to :batch
   has_many :tweets
 
