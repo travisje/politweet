@@ -40,13 +40,16 @@
   
 }
 
+table.donations thead tr {
+  background-color: #eff8ff;
+  th.tweet-count {
+    font-weight: 200;
+  }
+}
+
 .congress-pic {
   width: 100%;
   max-width: 600px;
-}
-table.donations thead tr {
-  background-color: #eff8ff;
-  
 }
 
 .twitter-icon {
@@ -65,5 +68,15 @@ p.signin {
   text-align: right;
   padding-top: 13px;
   padding-bottom: 7px;
+
+}
+td.add-currency-symbol:before {
+  content: '$';
+
+}
+
+h1 {
+  font-size: 100px;
+  font-style: italic;
 
 }

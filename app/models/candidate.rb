@@ -7,6 +7,8 @@ class Candidate < ActiveRecord::Base
   has_many :committees
   has_many :donations, through: :committees
 
+  #TODO Move to an importer class
+  
   def self.request(request_url)
     base_url = "https://api.open.fec.gov/v1/"
     api_request = base_url+request_url
@@ -50,7 +52,8 @@ class Candidate < ActiveRecord::Base
     end
   end
 
-  def self.add_twitter(candidates) #finish this when open secrets increase API count
+  def self.add_twitter(candidates) 
+
     candidates.each do |candidate|
       url = "http://www.opensecrets.org/api/?method=getLegislators&id=#{candidate.crp_id}&apikey=#{ENV['CRP_key']}&output=json"
       api_response = open(url).read
@@ -59,6 +62,7 @@ class Candidate < ActiveRecord::Base
       candidate.party = parsed["response"]["legislator"]["@attributes"]["party"]
       candidate.save
     end
+
   end
 
   def self.by_name(name)

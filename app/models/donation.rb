@@ -10,14 +10,17 @@ class Donation < ActiveRecord::Base
 
   @@for_bulk_insert = []
 
+  #TODO move to an importer class
   def self.import_csv_and_create(validate=true)
     batch = Batch.create
     set_fec_ids
     committee_fec_id_glossary = Committee.fec_id_glossary
     committees_for_batch_inserting = []
+
     # CHANGE
     # Committee.set_fec_ids
     # set_donat_lookup
+
     f = File.open("lib/data/itcont.txt", "r:bom|utf-8") 
     donations = SmarterCSV.process(f, {
       key_mapping: {
@@ -106,6 +109,7 @@ class Donation < ActiveRecord::Base
     Batch.last.donations
   end
 
+  #OLD but keeping for reference 
   def self.dup_trans(donations=nil)
     if ! donations
       donations = Donation.all
@@ -131,14 +135,10 @@ class Donation < ActiveRecord::Base
     dup_results.flatten
   end
 
-  def tweetify
-    handle = "@#{self.committee.candidate.twitter_handle}"
-    "Let's congratulate #{handle} on the $#{self.amount} of influence he sold to #{self.first_name} #{self.last_name} of #{self.employer}!"
-  end
-
   def self.to_csv(data, name = nil)
     Csv.new.write_file(data, name)
   end
+
   # def self.test
   #   results = [
   #     { Alabama: [

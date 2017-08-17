@@ -26,19 +26,18 @@
           .form-group
             = f.label "Tweet Text"
 
-            -# TODO look into twitter display plugin/docs that to allow for url length calculation and nice formatting
-            = f.text_area :text, {class: "form-control", maxlength: "140", rows: "2"}
+            -# TODO look into twitter display plugin/docs that to allow for url length calculation and nice formatting. It's really 140 but they give you leeway on url's
+            = f.text_area :text, {class: "form-control", maxlength: "170", rows: "3"}
 
             = hidden_field_tag 'tweet[donation_id]', 'placholder_id', {id: 'donation-id-input'}
             
-            -# TODO troubleshoot for safari
+            -# TODO check for safari
             = f.submit 'Submit', {class: "hidden"}
 
-          .checkbox
-            %label
-              %input{:type => "checkbox"}/
-              Check me out
-          -# %button.btn.btn-default{:type => "submit"} Submit
+          -# .checkbox
+          -#   %label
+          -#     %input{:type => "checkbox"}/
+          -#     Check me out
 
       .modal-footer
         %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close
@@ -53,14 +52,15 @@
       - else
         %p.signin
           = link_to('Login', new_user_session_path)
-          
+               
 
     .col-xs-12{style: "text-align: center;"}
       %img.congress-pic{src: 'assets/US_Capitol_from_NW.jpg'}
+      %h1.site-title Politweet
     .col-xs-12
       %h2 114th Congress
       %table.table.table-hover.candidates{id: 'candidates-table'}
-        %caption Show me (and them) the Money
+        %caption Show 'Em The Money
         %thead
           %tr
             %th
@@ -82,7 +82,7 @@
               %td= candidate.party
               %td= candidate.state
               %td= candidate.district
-              %td= candidate.total_donations
+              %td.add-currency-symbol= candidate.total_donations
               %td= candidate.twitter_handle.present? ? "@" + candidate.twitter_handle : ""
 
       -# my template donation table which I clone in JS
@@ -99,6 +99,7 @@
             %th City
             %th FEC Donation ID
             %th Tweet
-            %th Count
+            %th.tweet-count X
+            %th
         %tbody
           
